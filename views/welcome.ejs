@@ -1,0 +1,242 @@
+<style>
+  html, body, * {
+  box-sizing: border-box;
+}
+
+nav {
+  height: 60px;
+}
+
+nav h1 {
+  float: left;
+  margin: 10px 0 0 30px;
+  font-size: 2em;
+}
+
+nav ul {
+  float: right;
+}
+
+nav ul li {
+  display: inline-block;
+  list-style: none;
+  margin: 0 0 3px 0;
+  padding-right: 10px;
+  cursor: pointer;
+  color: #ccc;
+  transition: all 0.5s ease;
+}
+
+nav ul li:hover {
+  color: #000;
+}
+
+nav ul li:last-child {
+  margin-right: 20px;
+}
+
+nav ul li.active {
+  color: #000;
+}
+
+.underline {
+  position: absolute;
+  height: 4px;
+  background-color: #a261d8;
+  transition: all 0.5s ease;
+}
+
+.container {
+  width: 100%;
+  height: 100vh;
+  background-color: #5252ff;
+  border-radius: 5px;
+  z-index: 2;
+}
+
+button {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  height: 70px;
+  width: 200px;
+  margin: -35px 0 0 -100px;
+  padding: 15px 30px;
+  border-radius: 5px;
+  background-color: #ceaee8;
+  color: #fff;
+  font-size: 1.5em;
+  cursor: pointer;
+  -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+  outline: none;
+}
+
+button:hover {
+  opacity: 0.8;
+  box-shadow: 0 2px 5px #9a9a9a;
+}
+
+.overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: all .5s ease;
+}
+
+.overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.main-popup {
+  position: fixed;
+  left: 0;
+  top: 30px;
+  margin: 0;
+  width: 100%;
+  height: 450px;
+  background-color: #e7e7f6;
+  border-radius: 5px;
+  z-index: 15;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  transition: all .5s ease;
+  /*overflow: hidden;*/
+}
+
+.main-popup.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(10px);
+  transition: all .5s ease;
+}
+
+@media (min-width: 500px) {
+  .main-popup {
+    width: 500px;
+    left: 50%;
+    margin: 0 0 0 -250px;
+  }
+}
+
+</style>
+
+<div class="row mt-5" style="padding-top: 100px;">
+  <div class="col-md-6 m-auto">
+    <div class="card card-body text-center">
+      <p>Create an account or login</p>
+      <a href="/users/register" class="btn btn-secondary btn-block mb-2">
+        Register</a>
+      <a href="/users/login" class="btn btn-secondary btn-block">Login</a>
+    </div>
+  </div>
+</div>
+
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script>
+  /*Title: Cool Modal Popup Sign In/Out Form*/
+
+$(function() {
+  //defining all needed variables
+  var $overlay = $('.overlay');
+  var $mainPopUp = $('.main-popup')
+  var $signIn = $('#sign-in');
+  var $register = $('#register');
+  var $formSignIn = $('form.sign-in');
+  var $formRegister = $('form.register');
+  
+  var $firstChild = $('nav ul li:first-child');
+  var $secondChild = $('nav ul li:nth-child(2)');
+  var $thirdChild = $('nav ul li:nth-child(3)');
+  
+  //defining function to create underline initial state on document load
+  function initialState() {
+    $('.underline').css({
+      "width": $firstChild.width(),
+      "left": $firstChild.position().left,
+      "top": $firstChild.position().top + $firstChild.outerHeight(true) + 'px'
+    });
+  }
+  initialState(); //() used after calling function to call function immediately on doc load
+  
+  //defining function to change underline depending on which li is active
+  function changeUnderline(el) {
+    $('.underline').css({
+      "width": el.width(),
+      "left": el.position().left,
+      "top": el.position().top + el.outerHeight(true) + 'px'
+    });
+  } //note: have not called the function...don't want it called immediately
+  
+  $firstChild.on('click', function(){
+    var el = $firstChild;
+    changeUnderline(el); //call the changeUnderline function with el as the perameter within the called function
+    $secondChild.removeClass('active');
+    $thirdChild.removeClass('active');
+    $(this).addClass('active');
+  });
+  
+  $secondChild.on('click', function(){
+    var el = $secondChild;
+    changeUnderline(el); //call the changeUnderline function with el as the perameter within the called function
+    $firstChild.removeClass('active');
+    $thirdChild.removeClass('active');
+    $(this).addClass('active');
+  });
+  
+  $thirdChild.on('click', function(){
+    var el = $thirdChild;
+    changeUnderline(el); //call the changeUnderline function with el as the perameter within the called function
+    $firstChild.removeClass('active');
+    $secondChild.removeClass('active');
+    $(this).addClass('active');
+  });
+  
+  
+  $('button').on('click', function(){
+    $overlay.addClass('visible');
+    $mainPopUp.addClass('visible');
+    $signIn.addClass('active');
+    $register.removeClass('active');
+    $formRegister.removeClass('move-left');
+    $formSignIn.removeClass('move-left');
+  });
+  $overlay.on('click', function(){
+    $(this).removeClass('visible');
+    $mainPopUp.removeClass('visible');
+  });
+  $('#popup-close-button a').on('click', function(e){
+    e.preventDefault();
+    $overlay.removeClass('visible');
+    $mainPopUp.removeClass('visible');
+  });
+  
+  $signIn.on('click', function(){
+    $signIn.addClass('active');
+    $register.removeClass('active');
+    $formSignIn.removeClass('move-left');
+    $formRegister.removeClass('move-left');
+  });
+  
+  $register.on('click', function(){
+    $signIn.removeClass('active');
+    $register.addClass('active');
+    $formSignIn.addClass('move-left');
+    $formRegister.addClass('move-left');
+  });
+  
+  $('input').on('submit', function(e){
+    e.preventDefault(); //used to prevent submission of form...remove for real use
+  });
+});
+</script>
