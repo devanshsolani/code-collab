@@ -1,5 +1,6 @@
 {
   "name": "node_passport_login",
+  "homepage": "https://devanshsolani.github.io/code-collab",
   "version": "2.0.0",
   "description": "Node.js authentication with Passport",
   "main": "app.js",
