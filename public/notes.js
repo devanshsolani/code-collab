@@ -1,4 +1,4 @@
-const socket = io('http://localhost:5000')
+const socket = io('https://collabo-ide.herokuapp.com/')
 // const socket = io('http://localhost:8800')
 const getLastItem = thePath => thePath.substring(thePath.lastIndexOf('/') + 1)
 
